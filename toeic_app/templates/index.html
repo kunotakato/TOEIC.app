@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>TOEICスコア管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>TOEICスコア登録</h1>
+    <form method="POST">
+        <label>日付: <input type="date" name="date" required></label><br>
+        <label>リスニング: <input type="number" name="listening_score" required></label><br>
+        <label>リーディング: <input type="number" name="reading_score" required></label><br>
+        <button type="submit">保存</button>
+    </form>
+
+    <h2>スコア推移グラフ</h2>
+    <canvas id="scoreChart" width="600" height="300"></canvas>
+
+    <script>
+        const ctx = document.getElementById('scoreChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ dates|tojson }},
+                datasets: [
+                    {
+                        label: 'リスニング',
+                        data: {{ listening_scores|tojson }},
+                        borderColor: 'blue',
+                        fill: false
+                    },
+                    {
+                        label: 'リーディング',
+                        data: {{ reading_scores|tojson }},
+                        borderColor: 'green',
+                        fill: false
+                    },
+                    {
+                        label: '合計',
+                        data: {{ total_scores|tojson }},
+                        borderColor: 'red',
+                        fill: false,
+                        borderDash: [5, 5]
+                    }
+
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true, max: 500 }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
