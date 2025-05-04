@@ -11,11 +11,50 @@
         <label>日付: <input type="date" name="date" required></label><br>
         <label>リスニング: <input type="number" name="listening_score" required></label><br>
         <label>リーディング: <input type="number" name="reading_score" required></label><br>
+        <label>種類:
+            <select name="type">
+                <option value="本番">本番</option>
+                <option value="模試">模試</option>
+            </select>
+        </label><br>
+        <label>教材（模試のみ）: <input type="text" name="material"></label><br>
+        <label>回数（模試のみ）: <input type="number" name="trial_number" min="1"></label><br>
         <button type="submit">保存</button>
     </form>
 
     <h2>スコア推移グラフ</h2>
     <canvas id="scoreChart" width="600" height="300"></canvas>
+
+    <h2>登録済みスコア</h2>
+    <table border="1">  
+        <tr>
+            <th>日付</th>
+            <th>リスニング</th>
+            <th>リーディング</th>
+            <th>合計</th>
+            <th>種類</th>
+            <th>教材</th>
+            <th>回数</th>
+            <th>削除</th>
+        <tr>
+        {% for row in scores %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            <td>{{ row[2] }}</td>
+            <td>{{ row[1] + row[2] }}</td>
+            <td>{{ row[3] }}</td>
+            <td>{{ row[4] }}</td>
+            <td>{{ row[5] }}</td>
+            <td>
+                <form action="/delete" method="POST" style="display:inline;">
+                    <input type="hidden" name="date" value="{{ row[0] }}">
+                    <button type="submit" onclick="return confirm('本当に削除しますか？')">削除</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
 
     <script>
         const ctx = document.getElementById('scoreChart').getContext('2d');
@@ -49,7 +88,9 @@
             options: {
                 responsive: true,
                 scales: {
-                    y: { beginAtZero: true, max: 500 }
+                    y: { beginAtZero: true, 
+                         max: 900 
+                    }
                 }
             }
         });
